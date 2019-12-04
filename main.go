@@ -51,7 +51,7 @@ func generate(in *plugin.CodeGeneratorRequest) *plugin.CodeGeneratorResponse {
 		}
 
 		for _, cf := range files {
-			resp.File = append(resp.File, cf)
+			appendFileIfNotExist(resp, cf)
 		}
 	}
 
@@ -66,5 +66,17 @@ func writeResponse(w io.Writer, resp *plugin.CodeGeneratorResponse) {
 	_, err = w.Write(data)
 	if err != nil {
 
+	}
+}
+
+func appendFileIfNotExist(resp *plugin.CodeGeneratorResponse, cf *plugin.CodeGeneratorResponse_File) {
+	found := false
+	for _, f := range resp.File {
+		if *f.Name == *cf.Name {
+			found = true
+		}
+	}
+	if !found {
+		resp.File = append(resp.File, cf)
 	}
 }
